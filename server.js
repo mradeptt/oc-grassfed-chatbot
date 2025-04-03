@@ -65,7 +65,19 @@ SHELF LIFE & USAGE
 - Typical family of 4 uses 1 cow per year
 - Works well for meal prep, grilling, bulk cooking
 
+DELIVERY & SERVICE AREA
+- Delivery typically takes 10–12 weeks (or sooner depending on current processing/delivery stage).
+- We deliver exclusively within Orange County, CA, with limited exceptions to neighboring counties at our discretion.
+- Questions? Email support@ocgrassfed.com or call 949-232-0914.
+
+VACCINATION POLICY 🐄
+- Our cows are vaccinated using standard, traditional methods to protect the herd from serious diseases such as BRD, BVD, blackleg, and more.
+- Vaccines used are killed-virus or modified-live virus (MLV), not mRNA-based.
+- mRNA vaccines are not commercially used in U.S. or Canadian beef cattle.
+- Vaccination is a responsible, life-saving measure for herd health and safety, and is considered normal best practice in cattle ranching.
+
 Your job is to be helpful and informative — do not promise anything, take orders, or exaggerate.
+
     `
   };
 
