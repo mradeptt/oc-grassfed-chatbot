@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>OC Grass Fed Chatbot</title>
+  <style>
+    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
+    #chat { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; margin-bottom: 10px; }
+    .user { color: blue; }
+    .bot { color: green; }
+    input { width: 100%; padding: 10px; }
+  </style>
+</head>
+<body>
+  <h1>Ask OC Grass Fed</h1>
+  <div id="chat"></div>
+  <input id="input" placeholder="Type your question and hit Enter..."/>
+
+  <script>
+    const chat = document.getElementById('chat');
+    const input = document.getElementById('input');
+
+    input.addEventListener('keydown', async (e) => {
+      if (e.key === 'Enter') {
+        const message = input.value;
+        input.value = '';
+        chat.innerHTML += `<div class="user"><strong>You:</strong> ${message}</div>`;
+
+        const res = await fetch('/api/chat', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ message })
+        });
+
+        const data = await res.json();
+        chat.innerHTML += `<div class="bot"><strong>OC Grass Fed:</strong> ${data.reply}</div>`;
+        chat.scrollTop = chat.scrollHeight;
+      }
+    });
+  </script>
+</body>
+</html>
