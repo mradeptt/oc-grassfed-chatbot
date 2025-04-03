@@ -55,7 +55,7 @@ WAGYU (American Kobe Hybrid)
 
 FREEZER SPACE NEEDED
 - 18.9 lbs per cubic foot
-- 1/8: 2.7–3.3 cu ft (~mini fridge or microwave)
+- 1/8: 2.7–3.3 cu ft (~mini fridge or a Suitcase)
 - 1/4: 5.6–6.6 cu ft (~camping cooler or car trunk)
 - 1/2: 11.3–13.5 cu ft (~patio bench or washer/dryer)
 - Whole: 22–27 cu ft (~bathtub or small couch)
