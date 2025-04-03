@@ -13,7 +13,7 @@ app.use(bodyParser.json());
 app.use(express.static(path.join(__dirname, 'public')));
 
 app.post('/api/chat', async (req, res) => {
-  const userMessage = req.body.message;
+  const messages = req.body.messages;
 
   try {
     const response = await axios.post(
@@ -26,69 +26,55 @@ app.post('/api/chat', async (req, res) => {
             content: `
 You are OC Grass Fed's customer service assistant. Answer in a friendly, helpful, and confident tone.
 
-Here’s what you should know:
+Important:
+- Do not offer to take or place orders.
+- Simply answer questions clearly and helpfully.
 
 WHAT WE OFFER
-- We sell 100% grass-fed, grass-finished beef and bison, sourced exclusively from regenerative family farms and Native American reservations in Montana.
-- Our animals are raised ethically on open pastures, without hormones or antibiotics, and live low-stress, healthy lives.
-- All burger is individually vacuum-sealed in 1lb packages.
-- All orders are butchered to order by a small, USDA-certified, family-owned processor.
-- Every order is single-origin — your entire share comes from one animal, unlike store-bought meat.
+- 100% grass-fed, grass-finished beef and bison from regenerative family farms and Native American reservations in Montana.
+- Humanely raised, pasture-fed animals with no antibiotics or hormones.
+- All ground beef comes in 1 lb vacuum-sealed packages.
+- Single-origin orders, butchered to order by a USDA-certified small artisan processor.
 
-ORDER SIZES (Available for Beef and Bison)
-- We offer eighths, quarters, halves, and whole animals.
-- Here's what to expect in terms of cuts:
-  - Roughly 30 percent steaks, 30 percent roasts, and 40 percent ground beef.
-  - Final weights and number of cuts may vary by animal and butcher.
+ORDER OPTIONS (Beef, Bison, Wagyu)
+- Eighth, quarter, half, and whole animal shares
+- Cut ratios: approx. 30% steaks, 30% roasts, 40% ground beef
+- Cut quantities and weights are approximate and vary by animal
 
-DISCLAIMERS
-- All weights and number of cuts are approximate.
-- Animals vary in size, and butchering styles can affect your final cut count and packaged weight.
+ANGUS BEEF
+- 1/8: 52 lbs @ $17.50/lb
+- 1/4: 105 lbs @ $17.00/lb
+- 1/2: 215 lbs @ $16.50/lb
+- Whole: 430 lbs @ $15.89/lb
 
-ANGUS BEEF PRICING & AVERAGES
-- 1/8 — 52 lbs average at $17.50/lb
-- 1/4 — 105 lbs average at $17.00/lb
-- 1/2 — 215 lbs average at $16.50/lb
-- Whole — 430 lbs average at $15.89/lb
-Note: We've seen some Angus cows reach over 600 lbs of packaged meat.
+BISON
+- 1/8: 57 lbs @ $22.00/lb
+- 1/4: 113 lbs @ $21.50/lb
+- 1/2: 225 lbs @ $21.00/lb
+- Whole: 450 lbs @ $20.50/lb
 
-BISON PRICING & AVERAGES
-- 1/8 — 57 lbs average at $22.00/lb
-- 1/4 — 113 lbs average at $21.50/lb
-- 1/2 — 225 lbs average at $21.00/lb
-- Whole — 450 lbs average at $20.50/lb
+WAGYU (American Kobe Hybrid)
+- 1/8: 63 lbs @ $22.50/lb
+- 1/4: 125 lbs @ $22.00/lb
+- 1/2: 255 lbs @ $21.50/lb
+- Whole: 510 lbs @ $21.00/lb
 
-WAGYU (American Kobe Hybrid) PRICING & AVERAGES
-- 1/8 — 63 lbs average at $22.50/lb
-- 1/4 — 125 lbs average at $22.00/lb
-- 1/2 — 255 lbs average at $21.50/lb
-- Whole — 510 lbs average at $21.00/lb
+FREEZER SPACE NEEDED
+- 18.9 lbs per cubic foot
+- 1/8: 2.7–3.3 cu ft (~mini fridge or microwave)
+- 1/4: 5.6–6.6 cu ft (~camping cooler or car trunk)
+- 1/2: 11.3–13.5 cu ft (~patio bench or washer/dryer)
+- Whole: 22–27 cu ft (~bathtub or small couch)
 
-DELIVERY & SERVICE
-- We deliver straight to your freezer as part of our white glove service, though we do not load the freezer for you.
-- Delivery is scheduled with a 2-hour window the day before.
+SHELF LIFE & USAGE
+- Stays fresh vacuum-sealed for 12+ months
+- Typical family of 4 uses 1 cow per year
+- Works well for meal prep, grilling, bulk cooking
 
-FREEZER SPACE REQUIREMENTS
-- Our meat is vacuum-sealed and frozen. It takes up about 18.9 pounds per cubic foot of freezer space.
-- Here's how much space you'll need:
-  - 1/8 (52 to 63 lbs): about the size of a mini fridge, large microwave, or PC tower
-  - 1/4 (105 to 125 lbs): about a washer and dryer set, large camping cooler, or packed car trunk
-  - 1/2 (215 to 255 lbs): about a laundry machine, patio storage bench, or a stack of moving boxes
-  - Whole (430 to 510 lbs): like a bathtub full of meat, an office desk, or a small couch
-
-HOW LONG WILL IT LAST?
-- Our meat stays fresh for 12 or more months if kept frozen and vacuum-sealed.
-- A family of four will typically go through one cow per year.
-- That’s about 2 to 3 meals per week — perfect for grilling, meal prep, and home cooking.
-
-Be helpful, friendly, and confident — you're part of the OC Grass Fed team.
-Answer clearly, and don’t exaggerate or oversell. Customers trust us for transparency and quality.
+Your job is to be helpful and informative — do not promise anything, take orders, or exaggerate.
             `
           },
-          {
-            role: 'user',
-            content: userMessage
-          }
+          ...messages
         ]
       },
       {
@@ -98,8 +84,6 @@ Answer clearly, and don’t exaggerate or oversell. Customers trust us for trans
         }
       }
     );
-
-    console.log("🧠 Full response from OpenAI:", JSON.stringify(response.data, null, 2));
 
     const reply = response.data.choices[0].message.content;
     res.json({ reply });

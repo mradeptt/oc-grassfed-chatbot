@@ -1,42 +1,49 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>OC Grass Fed Chatbot</title>
-  <style>
-    body { font-family: Arial; padding: 20px; max-width: 600px; margin: auto; }
-    #chat { border: 1px solid #ccc; padding: 10px; height: 400px; overflow-y: scroll; margin-bottom: 10px; }
-    .user { color: blue; }
-    .bot { color: green; }
-    input { width: 100%; padding: 10px; }
-  </style>
 </head>
 <body>
-  <h1>Ask OC Grass Fed</h1>
-  <div id="chat"></div>
-  <input id="input" placeholder="Type your question and hit Enter..."/>
+  <h1>OC Grass Fed Chatbot</h1>
+  <div id="chat" style="white-space: pre-line;"></div>
+  <input type="text" id="userInput" placeholder="Type your question..." />
+  <button onclick="sendMessage()">Send</button>
 
   <script>
-    const chat = document.getElementById('chat');
-    const input = document.getElementById('input');
+    const chatBox = document.getElementById('chat');
+    const input = document.getElementById('userInput');
+    const messageHistory = [];
 
-    input.addEventListener('keydown', async (e) => {
-      if (e.key === 'Enter') {
-        const message = input.value;
-        input.value = '';
-        chat.innerHTML += `<div class="user"><strong>You:</strong> ${message}</div>`;
+    function appendToChat(role, content) {
+      const label = role === 'user' ? 'You' : 'OC Grass Fed';
+      chatBox.innerText += `\n${label}: ${content}`;
+    }
 
-        const res = await fetch('/api/chat', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ message })
-        });
+    async function sendMessage() {
+      const userMessage = input.value.trim();
+      if (!userMessage) return;
 
-        const data = await res.json();
-        chat.innerHTML += `<div class="bot"><strong>OC Grass Fed:</strong> ${data.reply}</div>`;
-        chat.scrollTop = chat.scrollHeight;
+      // Add user message to history
+      messageHistory.push({ role: 'user', content: userMessage });
+      appendToChat('user', userMessage);
+      input.value = '';
+
+      const response = await fetch('/api/chat', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: messageHistory }),
+      });
+
+      const data = await response.json();
+      if (data.reply) {
+        messageHistory.push({ role: 'assistant', content: data.reply });
+        appendToChat('assistant', data.reply);
+      } else {
+        appendToChat('assistant', 'Sorry, something went wrong.');
       }
-    });
+    }
   </script>
 </body>
 </html>
