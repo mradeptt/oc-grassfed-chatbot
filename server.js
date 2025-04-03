@@ -15,15 +15,9 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.post('/api/chat', async (req, res) => {
   const messages = req.body.messages;
 
-  try {
-    const response = await axios.post(
-      'https://api.openai.com/v1/chat/completions',
-      {
-        model: 'gpt-3.5-turbo',
-        messages: [
-          {
-            role: 'system',
-            content: `
+  const systemMessage = {
+    role: 'system',
+    content: `
 You are OC Grass Fed's customer service assistant. Answer in a friendly, helpful, and confident tone.
 
 Important:
@@ -72,10 +66,38 @@ SHELF LIFE & USAGE
 - Works well for meal prep, grilling, bulk cooking
 
 Your job is to be helpful and informative — do not promise anything, take orders, or exaggerate.
-            `
-          },
-          ...messages
-        ]
+    `
+  };
+
+  // Check if the last user message is a total cost inquiry
+  const lastMessage = messages[messages.length - 1]?.content?.toLowerCase() || '';
+  const wantsTotalCost =
+    lastMessage.includes("total cost") ||
+    lastMessage.includes("how much total") ||
+    lastMessage.includes("what would the total be") ||
+    (lastMessage.includes("how much") && lastMessage.includes("quarter")) ||
+    (lastMessage.includes("how much") && lastMessage.includes("half")) ||
+    (lastMessage.includes("how much") && lastMessage.includes("eighth")) ||
+    (lastMessage.includes("how much") && lastMessage.includes("whole"));
+
+  const helperMessage = wantsTotalCost
+    ? {
+        role: 'user',
+        content:
+          'Please calculate the total price using weight × price per pound and show the math clearly. For example, "105 lbs × $17.00/lb = $1,785.00".'
+      }
+    : null;
+
+  const fullPrompt = helperMessage
+    ? [systemMessage, helperMessage, ...messages]
+    : [systemMessage, ...messages];
+
+  try {
+    const response = await axios.post(
+      'https://api.openai.com/v1/chat/completions',
+      {
+        model: 'gpt-3.5-turbo',
+        messages: fullPrompt
       },
       {
         headers: {
